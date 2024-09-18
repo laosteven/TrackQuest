@@ -2,6 +2,7 @@
 	import { browser } from '$app/environment';
 	import { PUBLIC_GOOGLE_MAP_API_KEY } from '$env/static/public';
 	import { gpxData } from '../stores/gpx-store';
+	import { heroPathStyle } from './heros-path.style';
 
 	if (browser) {
 		let map: google.maps.Map | null = null;
@@ -12,10 +13,10 @@
 		let flightPath: google.maps.Polyline | null = null;
 		let currentIndex = 0;
 		let userHasZoomed = false; // Track if user manually zoomed
+		let marker: google.maps.Marker | null = null; // To store the current marker
 
 		const MIN_ZOOM_LEVEL = 2;
 		const MAX_ZOOM_LEVEL = 18;
-		const MAX_INDEX_FOR_ZOOM = 20;
 
 		import('@googlemaps/js-api-loader').then((pkg) => {
 			const { Loader } = pkg;
@@ -31,7 +32,13 @@
 						center: { lat: 0, lng: 0 },
 						zoom: MIN_ZOOM_LEVEL,
 						minZoom: MIN_ZOOM_LEVEL,
-						maxZoom: MAX_ZOOM_LEVEL
+						maxZoom: MAX_ZOOM_LEVEL,
+						disableDefaultUI: true,
+						zoomControl: false,
+						streetViewControl: false,
+						mapTypeControl: false,
+						fullscreenControl: false,
+						styles: heroPathStyle
 					});
 
 					// Stop the animation when the user zooms or drags the map
@@ -75,15 +82,31 @@
 				flightPath = new google.maps.Polyline({
 					path: [],
 					geodesic: true,
-					strokeColor: '#FF0000',
-					strokeOpacity: 1.0,
-					strokeWeight: 2
+					strokeColor: '#4ae5a1',
+					strokeOpacity: 0.8,
+					strokeWeight: getStrokeWeight(map.getZoom())
 				});
 
 				flightPath.setMap(map);
 
+				// Initialize the marker to follow the most recent coordinate
+				marker = new google.maps.Marker({
+					position: flightPlanCoordinates[0], // Start at the first point
+					map: map,
+					icon: {
+						url: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png', // Custom icon
+						scaledSize: new google.maps.Size(32, 32) // Adjust size
+					}
+				});
+
 				startAnimation();
 			}
+		}
+
+		function getStrokeWeight(zoom?: number): number {
+			const baseWeight = 10; // Base stroke weight
+			const zoomFactor = 2; // Factor to adjust stroke weight based on zoom level
+			return baseWeight / Math.pow(zoomFactor, (zoom ?? MAX_ZOOM_LEVEL - MIN_ZOOM_LEVEL) / 2);
 		}
 
 		// Start the animation from the current index
@@ -112,11 +135,12 @@
 					map?.setZoom(zoomLevel);
 				}
 
-				map.setCenter(flightPlanCoordinates[currentIndex - 1]);
+				marker?.setPosition(flightPlanCoordinates[currentIndex]);
+				map.setCenter(flightPlanCoordinates[currentIndex]);
 				currentIndex++;
 			}
 
-			animationInterval = window.setInterval(addNextCoordinate, 20); // Adjust speed with 20ms intervals
+			animationInterval = window.setInterval(addNextCoordinate, 10); // Adjust speed with 20ms intervals
 		}
 
 		function stopAnimation(): void {
