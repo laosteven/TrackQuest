@@ -1,8 +1,13 @@
 <script lang="ts">
+	import Map from '../components/map.svelte';
 </script>
 
 <svelte:head>
 	<title>Athlete's Path</title>
 </svelte:head>
 
-hello
+<main class="grid flex-1 gap-4 overflow-auto p-4">
+	<div class="relative hidden flex-col items-start gap-8 md:flex">
+		<Map></Map>
+	</div>
+</main>

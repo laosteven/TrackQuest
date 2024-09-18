@@ -1,30 +1,37 @@
-<script>
-	import { onMount } from 'svelte';
+<script lang="ts">
+	import { browser } from '$app/environment';
+	import { PUBLIC_GOOGLE_MAP_API_KEY } from '$env/static/public';
 
-	let map;
+	if (browser) {
+		import('@googlemaps/js-api-loader').then((pkg) => {
+			const center: google.maps.LatLngLiteral = { lat: 30, lng: -110 };
 
-	onMount(() => {
-		// const script = document.createElement('script');
-		// script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap`;
-		// script.async = true;
-		// script.defer = true;
-		// window.initMap = initMap;
-		// document.body.appendChild(script);
-	});
+			const { Loader } = pkg;
+			const loader = new Loader({
+				apiKey: PUBLIC_GOOGLE_MAP_API_KEY,
+				version: 'weekly'
+			});
 
-	function initMap() {
-		// map = new google.maps.Map(document.getElementById('map'), {
-		// 	center: { lat: 45.5017, lng: -73.5673 }, // Example coordinates (Montreal)
-		// 	zoom: 12
-		// });
+			loader
+				.importLibrary('maps')
+				.then(({ Map }) => {
+					new Map(document.getElementById('map') as HTMLElement, {
+						center: { lat: -34.397, lng: 150.644 },
+						zoom: 8
+					});
+				})
+				.catch((e) => {
+					// do something
+				});
+		});
 	}
 </script>
 
 <div id="map"></div>
 
 <style>
-	/* #map {
-		height: 400px;
+	#map {
+		height: 100%;
 		width: 100%;
-	} */
+	}
 </style>
