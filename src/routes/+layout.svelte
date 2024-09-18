@@ -3,7 +3,6 @@
 	import '../app.css';
 
 	import Github from 'lucide-svelte/icons/github';
-	import Import from 'lucide-svelte/icons/import';
 	import Info from 'lucide-svelte/icons/info';
 	import LifeBuoy from 'lucide-svelte/icons/life-buoy';
 	import Share from 'lucide-svelte/icons/share';
@@ -13,6 +12,7 @@
 
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+	import ButtonUpload from '../components/button-upload.svelte';
 
 	$: isHomePage = $page.url.pathname === '/';
 	$: isAboutPage = $page.url.pathname === '/about';
@@ -26,7 +26,7 @@
 		</Button>
 	</div>
 	<nav class="grid gap-1 p-2">
-		<Tooltip.Root>
+		<Tooltip.Root openDelay={0}>
 			<Tooltip.Trigger asChild let:builder>
 				<Button
 					href="/"
@@ -41,7 +41,7 @@
 			</Tooltip.Trigger>
 			<Tooltip.Content side="right" sideOffset={5}>Home</Tooltip.Content>
 		</Tooltip.Root>
-		<Tooltip.Root>
+		<Tooltip.Root openDelay={0}>
 			<Tooltip.Trigger asChild let:builder>
 				<Button
 					href="/about"
@@ -56,7 +56,7 @@
 			</Tooltip.Trigger>
 			<Tooltip.Content side="right" sideOffset={5}>About</Tooltip.Content>
 		</Tooltip.Root>
-		<Tooltip.Root>
+		<Tooltip.Root openDelay={0}>
 			<Tooltip.Trigger asChild let:builder>
 				<Button
 					href="/help"
@@ -73,7 +73,7 @@
 		</Tooltip.Root>
 	</nav>
 	<nav class="mt-auto grid gap-1 p-2">
-		<Tooltip.Root>
+		<Tooltip.Root openDelay={0}>
 			<Tooltip.Trigger asChild let:builder>
 				<Button
 					href="https://github.com/laosteven/verbose-spoon"
@@ -89,7 +89,7 @@
 			</Tooltip.Trigger>
 			<Tooltip.Content side="right" sideOffset={5}>GitHub</Tooltip.Content>
 		</Tooltip.Root>
-		<Tooltip.Root>
+		<Tooltip.Root openDelay={0}>
 			<Tooltip.Trigger asChild let:builder>
 				<Button
 					variant="ghost"
@@ -107,14 +107,11 @@
 	</nav>
 </aside>
 
-<div class="grid h-screen w-full pl-[53px]">
+<div class="grid h-screen w-full pl-[57px]">
 	<div class="flex flex-col">
 		<header class="sticky top-0 z-10 flex h-[57px] items-center gap-1 border-b bg-background px-4">
 			<h1 class="text-xl font-semibold">Athlete's Path</h1>
-			<Button variant="outline" size="sm" class="ml-auto gap-1.5 text-sm">
-				<Import class="size-3.5" />
-				Import
-			</Button>
+			<ButtonUpload />
 			<Button disabled variant="outline" size="sm" class="gap-1.5 text-sm">
 				<Share class="size-3.5" />
 				Share
