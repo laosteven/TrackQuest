@@ -2,7 +2,10 @@
 	import { browser } from '$app/environment';
 	import { PUBLIC_GOOGLE_MAP_API_KEY } from '$env/static/public';
 	import { gpxData } from '../stores/gpx-store';
+	import { stravaActivities } from '../stores/strava-store';
 	import { heroPathStyle } from './heros-path.style';
+	// @ts-ignore
+	import polyline from '@mapbox/polyline';
 
 	if (browser) {
 		let map: google.maps.Map | null = null;
@@ -41,15 +44,17 @@
 						styles: heroPathStyle
 					});
 
-					// Stop the animation when the user zooms or drags the map
-					google.maps.event.addListener(map, 'zoom_changed', () => {
-						userHasZoomed = true; // Mark that the user manually zoomed
-						stopAnimation();
-					});
-					google.maps.event.addListener(map, 'dragstart', stopAnimation);
+					configurePath();
 
-					// Resume the animation when user interaction ends (idle event)
-					google.maps.event.addListener(map, 'idle', resumeAnimation);
+					// Stop the animation when the user zooms or drags the map
+					// google.maps.event.addListener(map, 'zoom_changed', () => {
+					// 	userHasZoomed = true; // Mark that the user manually zoomed
+					// 	stopAnimation();
+					// });
+					// google.maps.event.addListener(map, 'dragstart', stopAnimation);
+
+					// // Resume the animation when user interaction ends (idle event)
+					// google.maps.event.addListener(map, 'idle', resumeAnimation);
 				})
 				.catch((e) => {
 					console.error(e);
@@ -58,18 +63,17 @@
 
 		gpxData.subscribe((geojson) => {
 			if (geojson && map) {
-				restartAnimation(geojson); // Restart animation when new file is uploaded
+				clearPreviousData();
+				plotGPXData(geojson);
 			}
 		});
 
-		// Restart the animation when a new GPX file is uploaded
-		function restartAnimation(geojson: any): void {
-			stopAnimation(); // Stop any existing animation
-			clearPreviousData(); // Clear previous animation data
-			plotGPXData(geojson); // Plot new GPX data
-		}
+		stravaActivities.subscribe((data) => {
+			if (data) {
+				plotStravaActivitiesOnMap(data as any[]); // Start with the first activity
+			}
+		});
 
-		// Plot GPX data on the map
 		function plotGPXData(geojson: any): void {
 			if (!map) return;
 
@@ -79,38 +83,60 @@
 					([lng, lat]: [number, number]) => new google.maps.LatLng(lat, lng)
 				);
 
-				flightPath = new google.maps.Polyline({
-					path: [],
-					geodesic: true,
-					strokeColor: '#4ae5a1',
-					strokeOpacity: 0.8,
-					strokeWeight: getStrokeWeight(map.getZoom())
-				});
+				configurePath();
 
-				flightPath.setMap(map);
-
-				// Initialize the marker to follow the most recent coordinate
-				marker = new google.maps.Marker({
-					position: flightPlanCoordinates[0], // Start at the first point
-					map: map,
-					icon: {
-						url: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png', // Custom icon
-						scaledSize: new google.maps.Size(32, 32) // Adjust size
-					}
-				});
-
-				startAnimation();
+				startAnimation(() => {});
 			}
 		}
 
-		function getStrokeWeight(zoom?: number): number {
-			const baseWeight = 10; // Base stroke weight
-			const zoomFactor = 2; // Factor to adjust stroke weight based on zoom level
-			return baseWeight / Math.pow(zoomFactor, (zoom ?? MAX_ZOOM_LEVEL - MIN_ZOOM_LEVEL) / 2);
+		function plotStravaActivitiesOnMap(activities: any[]) {
+			if (!activities.length) return;
+			const activity = activities[0]; // Get the first activity
+			const decodedPolyline = polyline.decode(activity.map.summary_polyline);
+			const coordinates = decodedPolyline.map(
+				([lat, lng]: [number, number]) => new google.maps.LatLng(lat, lng)
+			);
+
+			flightPlanCoordinates = coordinates;
+			currentIndex = 0;
+
+			configurePath();
+			startAnimation(() => {
+				// After this activity is animated, animate the next
+				plotStravaActivitiesOnMap(activities.slice(1)); // Animate the next activity
+			});
+		}
+
+		function configurePath() {
+			if (!map) return;
+
+			// Create new flight path
+			flightPath = new google.maps.Polyline({
+				path: [],
+				geodesic: true,
+				strokeColor: '#4ae5a1',
+				strokeOpacity: 0.8,
+				strokeWeight: 5
+			});
+
+			flightPath.setMap(map);
+
+			// Clear previous marker if it exists
+			if (marker) marker.setMap(null);
+
+			// Initialize the marker to follow the most recent coordinate
+			marker = new google.maps.Marker({
+				position: flightPlanCoordinates[0], // Start at the first point
+				map: map,
+				icon: {
+					url: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png', // Custom icon
+					scaledSize: new google.maps.Size(32, 32) // Adjust size
+				}
+			});
 		}
 
 		// Start the animation from the current index
-		function startAnimation(): void {
+		function startAnimation(onComplete: () => void): void {
 			let bounds = new google.maps.LatLngBounds();
 
 			function addNextCoordinate(): void {
@@ -118,6 +144,7 @@
 
 				if (!animationActive || currentIndex >= flightPlanCoordinates.length) {
 					clearInterval(animationInterval ?? '');
+					onComplete(); // Move to the next activity
 					return;
 				}
 
@@ -140,15 +167,7 @@
 				currentIndex++;
 			}
 
-			animationInterval = window.setInterval(addNextCoordinate, 10); // Adjust speed with 20ms intervals
-		}
-
-		function stopAnimation(): void {
-			animationActive = false;
-			animationPaused = true; // Mark animation as paused
-			if (animationInterval) {
-				clearInterval(animationInterval);
-			}
+			animationInterval = window.setInterval(addNextCoordinate, 20); // Adjust speed with 20ms intervals
 		}
 
 		// Clear previous animation data when a new file is uploaded
@@ -163,12 +182,20 @@
 			}
 		}
 
+		function stopAnimation(): void {
+			animationActive = false;
+			animationPaused = true; // Mark animation as paused
+			if (animationInterval) {
+				clearInterval(animationInterval);
+			}
+		}
+
 		// Resume the animation if paused
 		function resumeAnimation(): void {
 			if (animationPaused) {
 				animationActive = true;
 				animationPaused = false;
-				startAnimation(); // Resume the animation from where it left off
+				startAnimation(() => {}); // Resume the animation
 			}
 		}
 	}

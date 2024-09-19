@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-	<title>Athlete's Path</title>
+	<title>TrackQuest</title>
 </svelte:head>
 
 <main class="grid flex-1 gap-4 overflow-auto">
