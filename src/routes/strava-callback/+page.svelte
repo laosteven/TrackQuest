@@ -2,6 +2,7 @@
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import { PUBLIC_STRAVA_CLIENT_ID, PUBLIC_STRAVA_CLIENT_SECRET } from '$env/static/public';
+	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { onMount } from 'svelte';
 	import { coordinatesStore } from '../../stores/coordinates-store';
 	import { stravaToken } from '../../stores/strava-store';
@@ -83,4 +84,4 @@
 	});
 </script>
 
-<div>Processing...</div>
+<Skeleton class="h-full w-full" />

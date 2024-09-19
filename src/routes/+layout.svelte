@@ -17,8 +17,7 @@
 	import { ModeWatcher } from 'mode-watcher';
 
 	import { toggleMode } from 'mode-watcher';
-	import ButtonStrava from '../components/button-strava.svelte';
-	import ButtonUpload from '../components/button-upload.svelte';
+	import ButtonIntegations from '../components/button-integations.svelte';
 	import DrawerActivities from '../components/drawer-activities.svelte';
 
 	$: isHomePage = $page.url.pathname === '/';
@@ -121,8 +120,7 @@
 	<div class="flex flex-col">
 		<header class="sticky top-0 z-10 flex h-[57px] items-center gap-1 border-b bg-background px-4">
 			<h1 class="text-xl font-semibold">TrackQuest</h1>
-			<ButtonUpload />
-			<ButtonStrava />
+			<ButtonIntegations />
 			<Button on:click={toggleMode} variant="outline" size="sm" class="gap-1.5 text-sm">
 				<Sun
 					class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"

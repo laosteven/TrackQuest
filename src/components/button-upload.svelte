@@ -3,10 +3,12 @@
 	// @ts-ignore
 	import toGeoJSON from '@mapbox/togeojson';
 	import Import from 'lucide-svelte/icons/import';
+	import { createEventDispatcher } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { coordinatesStore } from '../stores/coordinates-store';
 
 	const { gpx } = toGeoJSON;
+	const dispatch = createEventDispatcher();
 	let fileInput: HTMLInputElement | null = null;
 
 	function handleFileUpload(event: Event): void {
@@ -58,6 +60,8 @@
 						description: 'Displaying activites from GPX'
 					});
 
+					dispatch('done');
+
 					// Clean up
 					target.value = '';
 				})
@@ -82,7 +86,7 @@
 	multiple
 />
 
-<Button variant="outline" size="sm" class="ml-auto gap-1.5 text-sm" on:click={triggerFileUpload}>
+<Button variant="outline" class="w-full gap-1.5" on:click={triggerFileUpload}>
 	<Import class="size-3.5" />
-	Upload
+	Upload GPX
 </Button>
