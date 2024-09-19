@@ -1,11 +1,9 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { PUBLIC_GOOGLE_MAP_API_KEY } from '$env/static/public';
-	import { gpxData } from '../stores/gpx-store';
-	import { stravaActivities } from '../stores/strava-store';
+	import { toast } from 'svelte-sonner';
+	import { coordinatesStore } from '../stores/coordinates-store';
 	import { heroPathStyle } from './heros-path.style';
-	// @ts-ignore
-	import polyline from '@mapbox/polyline';
 
 	if (browser) {
 		let map: google.maps.Map | null = null;
@@ -36,11 +34,9 @@
 						zoom: MIN_ZOOM_LEVEL,
 						minZoom: MIN_ZOOM_LEVEL,
 						maxZoom: MAX_ZOOM_LEVEL,
-						disableDefaultUI: true,
 						zoomControl: false,
 						streetViewControl: false,
 						mapTypeControl: false,
-						fullscreenControl: false,
 						styles: heroPathStyle
 					});
 
@@ -58,42 +54,21 @@
 				})
 				.catch((e) => {
 					console.error(e);
+					toast.error('Error loading map: ', e);
 				});
 		});
 
-		gpxData.subscribe((geojson) => {
-			if (geojson && map) {
-				clearPreviousData();
-				plotGPXData(geojson);
-			}
-		});
-
-		stravaActivities.subscribe((data) => {
-			if (data) {
-				plotStravaActivitiesOnMap(data as any[]); // Start with the first activity
-			}
-		});
-
-		function plotGPXData(geojson: any): void {
-			if (!map) return;
-
-			const coordinates = geojson.features[0]?.geometry.coordinates;
+		coordinatesStore.subscribe((coordinates) => {
 			if (coordinates) {
-				flightPlanCoordinates = coordinates.map(
-					([lng, lat]: [number, number]) => new google.maps.LatLng(lat, lng)
-				);
-
-				configurePath();
-
-				startAnimation(() => {});
+				clearPreviousData();
+				plotActivitiesOnMap(coordinates as any[]);
 			}
-		}
+		});
 
-		function plotStravaActivitiesOnMap(activities: any[]) {
+		function plotActivitiesOnMap(activities: any[]) {
 			if (!activities.length) return;
 			const activity = activities[0]; // Get the first activity
-			const decodedPolyline = polyline.decode(activity.map.summary_polyline);
-			const coordinates = decodedPolyline.map(
+			const coordinates = activity.map(
 				([lat, lng]: [number, number]) => new google.maps.LatLng(lat, lng)
 			);
 
@@ -103,7 +78,7 @@
 			configurePath();
 			startAnimation(() => {
 				// After this activity is animated, animate the next
-				plotStravaActivitiesOnMap(activities.slice(1)); // Animate the next activity
+				plotActivitiesOnMap(activities.slice(1)); // Animate the next activity
 			});
 		}
 
@@ -175,6 +150,12 @@
 			currentIndex = 0; // Reset index
 			flightPlanCoordinates = []; // Clear old coordinates
 			userHasZoomed = false; // Reset zoom flag
+
+			// Clear the marker from the map
+			if (marker) {
+				marker.setMap(null); // Remove the previous marker
+				marker = null;
+			}
 
 			if (flightPath) {
 				flightPath.setMap(null); // Remove old path from the map

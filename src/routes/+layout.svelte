@@ -10,6 +10,7 @@
 	import Triangle from 'lucide-svelte/icons/triangle';
 
 	import { Button } from '$lib/components/ui/button/index.js';
+	import { Toaster } from '$lib/components/ui/sonner';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import Moon from 'lucide-svelte/icons/moon';
 	import Sun from 'lucide-svelte/icons/sun';
@@ -26,6 +27,7 @@
 </script>
 
 <ModeWatcher />
+<Toaster />
 <DrawerActivities />
 <aside class="inset-y fixed left-0 z-20 flex h-full flex-col border-r">
 	<div class="border-b p-2">
