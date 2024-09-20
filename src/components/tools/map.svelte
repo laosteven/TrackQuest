@@ -4,11 +4,11 @@
 	import { mode } from 'mode-watcher';
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import { darkTheme } from '../map-themes/dark.style';
-	import { heroPathStyle } from '../map-themes/heros-path.style';
-	import { lightTheme } from '../map-themes/light.style';
-	import { filteredCoordinatesStore } from '../stores/coordinates-store';
-	import { settingsStore } from '../stores/settings-store';
+	import { darkTheme } from '../../map-themes/dark.style';
+	import { heroPathStyle } from '../../map-themes/heros-path.style';
+	import { lightTheme } from '../../map-themes/light.style';
+	import { filteredCoordinatesStore } from '../../stores/integration-store';
+	import { settingsConfigurationStore } from '../../stores/settings-store';
 
 	if (browser) {
 		let map: google.maps.Map | null = null;
@@ -40,7 +40,7 @@
 			hero: heroPathStyle
 		};
 
-		settingsStore.subscribe((settings) => {
+		settingsConfigurationStore.subscribe((settings) => {
 			updateMapStyle(settings.theme);
 			speedAnimation = settings.speedAnimation;
 			strokeWeight = settings.strokeWeight;
@@ -101,7 +101,7 @@
 					})
 					.catch((e) => {
 						console.error(e);
-						toast.error('Error loading map: ', e);
+						toast.error('Error loading the map: ', e);
 					});
 			});
 		}

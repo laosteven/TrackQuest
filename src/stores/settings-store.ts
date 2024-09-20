@@ -1,7 +1,7 @@
 
 import { writable } from 'svelte/store';
 
-export const settingsStore = writable({
+export const settingsConfigurationStore = writable({
   theme: { value: 'light', label: 'Skyward Haven' },
   speedAnimation: 20,
   strokeWeight: 5,
@@ -9,3 +9,6 @@ export const settingsStore = writable({
   strokeOpacity: 0.8,
   markerSize: 32,
 }); 
+
+export const openSettingsDrawer = writable(false);
+export const onSaveSettingsAction = writable(false);

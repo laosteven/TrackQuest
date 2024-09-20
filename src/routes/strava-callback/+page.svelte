@@ -12,8 +12,11 @@
 	import { cn } from '$lib/utils.js';
 	import { CalendarDate, DateFormatter, getLocalTimeZone, today } from '@internationalized/date';
 	import { onMount } from 'svelte';
-	import { coordinatesStore, filteredCoordinatesStore } from '../../stores/coordinates-store';
-	import { stravaInformationStore, stravaToken } from '../../stores/strava-store';
+	import {
+		filteredCoordinatesStore,
+		unfilteredCoordinatesStore
+	} from '../../stores/integration-store';
+	import { stravaInformationStore, stravaTokenStore } from '../../stores/strava-store';
 	// @ts-ignore
 	import polyline from '@mapbox/polyline';
 	import type { DateRange } from 'bits-ui';
@@ -49,7 +52,7 @@
 			if (code) {
 				exchangeToken(code);
 				toast.success('Success!', {
-					description: 'Activities gathered from Strava'
+					description: 'Starting filtering options for Strava'
 				});
 			} else if (error) {
 				toast.error('Strava operation aborted');
@@ -73,13 +76,13 @@
 			});
 			const data = await response.json();
 			accessToken = data.access_token;
-			stravaToken.set(data.access_token);
+			stravaTokenStore.set(data.access_token);
 
 			if (accessToken) {
 				fetchStravaActivities();
 			}
 		} catch (e) {
-			toast.error(`Error: ${e}`);
+			toast.error(`Strava error: ${e}`);
 			goto('/');
 		}
 	}
@@ -118,7 +121,7 @@
 				filteredCoordinates.push(decodedPolyline);
 			});
 
-			coordinatesStore.set(coordinates);
+			unfilteredCoordinatesStore.set(coordinates);
 			filteredCoordinatesStore.set(filteredCoordinates);
 
 			toast.success('Success!', {

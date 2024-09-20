@@ -3,12 +3,10 @@
 	// @ts-ignore
 	import toGeoJSON from '@mapbox/togeojson';
 	import Import from 'lucide-svelte/icons/import';
-	import { createEventDispatcher } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import { filteredCoordinatesStore } from '../stores/coordinates-store';
+	import { filteredCoordinatesStore, openStartDialog } from '../../stores/integration-store';
 
 	const { gpx } = toGeoJSON;
-	const dispatch = createEventDispatcher();
 	let fileInput: HTMLInputElement | null = null;
 
 	function handleFileUpload(event: Event): void {
@@ -57,16 +55,17 @@
 					filteredCoordinatesStore.set(allCoordinates);
 
 					toast.success('Success!', {
-						description: 'Displaying activites from GPX'
+						description: 'Displaying activites from GPX file(s)'
 					});
 
-					dispatch('done');
+					// Close start dialog
+					openStartDialog.set(false);
 
 					// Clean up
 					target.value = '';
 				})
 				.catch(() => {
-					toast.error('Could not read the files');
+					toast.error('Could not read the file(s)');
 				});
 		}
 	}

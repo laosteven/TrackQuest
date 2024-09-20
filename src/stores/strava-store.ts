@@ -6,7 +6,7 @@ import {
 import type { DateRange } from 'bits-ui';
 import { writable } from 'svelte/store';
 
-export const stravaToken = writable<string | null>(null);
+export const stravaTokenStore = writable<string | null>(null);
 export const stravaInformationStore = writable({
   types: [] as string[],
   selectedTypes: [] as string[],
