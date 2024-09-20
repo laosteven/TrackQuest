@@ -5,7 +5,7 @@
 	import Import from 'lucide-svelte/icons/import';
 	import { createEventDispatcher } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import { coordinatesStore } from '../stores/coordinates-store';
+	import { filteredCoordinatesStore } from '../stores/coordinates-store';
 
 	const { gpx } = toGeoJSON;
 	const dispatch = createEventDispatcher();
@@ -54,7 +54,7 @@
 			Promise.all(fileReaders)
 				.then((allCoordinates) => {
 					// You can combine or handle multiple geojson objects as needed
-					coordinatesStore.set(allCoordinates);
+					filteredCoordinatesStore.set(allCoordinates);
 
 					toast.success('Success!', {
 						description: 'Displaying activites from GPX'
@@ -88,5 +88,5 @@
 
 <Button variant="outline" class="w-full gap-1.5" on:click={triggerFileUpload}>
 	<Import class="size-3.5" />
-	Upload GPX
+	GPX files
 </Button>

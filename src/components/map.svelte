@@ -7,7 +7,7 @@
 	import { darkTheme } from '../map-themes/dark.style';
 	import { heroPathStyle } from '../map-themes/heros-path.style';
 	import { lightTheme } from '../map-themes/light.style';
-	import { coordinatesStore } from '../stores/coordinates-store';
+	import { filteredCoordinatesStore } from '../stores/coordinates-store';
 	import { settingsStore } from '../stores/settings-store';
 
 	if (browser) {
@@ -50,7 +50,7 @@
 			plotActivitiesOnMap();
 		});
 
-		coordinatesStore.subscribe((coordinates) => {
+		filteredCoordinatesStore.subscribe((coordinates) => {
 			if (coordinates) {
 				clearPreviousData();
 				clearInterval(animationInterval ?? '');

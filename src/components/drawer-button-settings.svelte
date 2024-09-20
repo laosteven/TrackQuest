@@ -58,7 +58,7 @@
 			<Tooltip.Content side="right" sideOffset={5}>Settings</Tooltip.Content>
 		</Tooltip.Root>
 	</Drawer.Trigger>
-	<Drawer.Content>
+	<Drawer.Content class="mx-auto sm:max-w-[400px]">
 		<Drawer.Header>
 			<Drawer.Title>Settings</Drawer.Title>
 			<Drawer.Description>Customize your map experience</Drawer.Description>
@@ -86,9 +86,7 @@
 											<span class="font-medium text-foreground">Skyward</span>
 											Haven
 										</p>
-										<p class="text-xs" data-description>
-											A bright, airy design inspired by the skies above.
-										</p>
+										<p class="text-xs" data-description>Airy design inspired by the skies above.</p>
 									</div>
 								</div>
 							</Select.Item>
@@ -100,9 +98,7 @@
 											<span class="font-medium text-foreground"> Depths </span>
 											Abyss
 										</p>
-										<p class="text-xs" data-description>
-											Plunge into the shadows that feels like the depths below.
-										</p>
+										<p class="text-xs" data-description>Plunge into the shadows.</p>
 									</div>
 								</div>
 							</Select.Item>
@@ -114,9 +110,7 @@
 											<span class="font-medium text-foreground"> Hero's </span>
 											Path
 										</p>
-										<p class="text-xs" data-description>
-											Balanced and grounded, this path offers a natural aesthetic.
-										</p>
+										<p class="text-xs" data-description>A grounded and natural aesthetic.</p>
 									</div>
 								</div>
 							</Select.Item>

@@ -19,7 +19,7 @@
 			Start
 		</Button>
 	</Drawer.Trigger>
-	<Drawer.Content>
+	<Drawer.Content class="mx-auto sm:max-w-[400px]">
 		<Drawer.Header>
 			<Drawer.Title>Integrations</Drawer.Title>
 			<Drawer.Description
