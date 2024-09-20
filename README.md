@@ -1,22 +1,39 @@
-# create-svelte
+# TrackQuest
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+TrackQuest is an adventure mapping application inspired by the Hero's Path from the Legend of Zelda.
 
-## Creating a project
+It allows users to track their activities while providing customizable map styles and detailed activity progress.
 
-If you're seeing this, you've probably already done this step. Congrats!
+![Landing](https://i.imgur.com/dwJqmTH.png)
+
+![Settings](https://i.imgur.com/DBXlc3O.png)
+
+![Import](https://i.imgur.com/XWLD513.png)
+
+![Filtering](https://i.imgur.com/l0d0WmL.png)
+
+![Types](https://i.imgur.com/rbZBQDi.png)
+
+![Completion](https://i.imgur.com/gGIV6fn.png)
+
+## Features
+
+- Upload routes in GPX format
+- Connect to Strava to fetch activities
+- Customize map styles
+- View detailed activity progress
+
+## Setup
+
+### Dependencies
 
 ```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
+npm install
 ```
 
-## Developing
+### Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Once you've created a project and installed dependencies, start a development server:
 
 ```bash
 npm run dev
@@ -25,7 +42,7 @@ npm run dev
 npm run dev -- --open
 ```
 
-## Building
+### Building
 
 To create a production version of your app:
 
@@ -35,4 +52,24 @@ npm run build
 
 You can preview the production build with `npm run preview`.
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+## Environment Variables
+
+Create an `.env` file in the root directory with the following content:
+
+```makefile
+PUBLIC_GOOGLE_MAP_API_KEY=your_google_map_api_key
+PUBLIC_STRAVA_CLIENT_ID=your_strava_client_id
+PUBLIC_STRAVA_CLIENT_SECRET=your_strava_client_secret
+```
+
+## Docker
+
+Configure the environment variables in the `docker-compose.yml` file.
+
+Use the following command to start the application:
+
+```bash
+docker-compose up -d
+```
+
+This will start the application in a detached mode, allowing you to access TrackQuest at [http://localhost:1234](http://localhost:1234).
