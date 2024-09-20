@@ -12,7 +12,7 @@
 	}
 </script>
 
-<Button variant="secondary" class="w-full gap-1.5" on:click={authenticateStrava}>
+<Button variant="outline" class="w-full gap-1.5" on:click={authenticateStrava}>
 	<Zap class="size-3.5" />
 	Strava
 </Button>

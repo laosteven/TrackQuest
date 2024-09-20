@@ -1,12 +1,18 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { PUBLIC_GOOGLE_MAP_API_KEY } from '$env/static/public';
+	import { mode } from 'mode-watcher';
+	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
+	import { darkTheme } from '../map-themes/dark.style';
+	import { heroPathStyle } from '../map-themes/heros-path.style';
+	import { lightTheme } from '../map-themes/light.style';
 	import { coordinatesStore } from '../stores/coordinates-store';
-	import { heroPathStyle } from './heros-path.style';
+	import { settingsStore } from '../stores/settings-store';
 
 	if (browser) {
 		let map: google.maps.Map | null = null;
+		let activities: any[] = [];
 		let animationActive = true;
 		let animationPaused = false;
 		let animationInterval: number | null = null;
@@ -16,56 +22,96 @@
 		let userHasZoomed = false; // Track if user manually zoomed
 		let marker: google.maps.Marker | null = null; // To store the current marker
 
+		let theme =
+			$mode === 'light'
+				? { value: 'light', label: 'Skyward Haven' }
+				: { value: 'dark', label: 'Depths Abyss' };
+		let speedAnimation = 20;
+		let strokeWeight = 5;
+		let strokeOpacity = 0.8;
+		let markerSize = 32;
+
 		const MIN_ZOOM_LEVEL = 2;
 		const MAX_ZOOM_LEVEL = 18;
+		const themes = {
+			light: lightTheme,
+			dark: darkTheme,
+			hero: heroPathStyle
+		};
 
-		import('@googlemaps/js-api-loader').then((pkg) => {
-			const { Loader } = pkg;
-			const loader = new Loader({
-				apiKey: PUBLIC_GOOGLE_MAP_API_KEY,
-				version: 'weekly'
-			});
+		settingsStore.subscribe((settings) => {
+			updateMapStyle(settings.theme);
+			speedAnimation = settings.speedAnimation;
+			strokeWeight = settings.strokeWeight;
+			strokeOpacity = settings.strokeOpacity;
+			markerSize = settings.markerSize;
 
-			loader
-				.importLibrary('maps')
-				.then(({ Map }) => {
-					map = new Map(document.getElementById('map') as HTMLElement, {
-						center: { lat: 0, lng: 0 },
-						zoom: MIN_ZOOM_LEVEL,
-						minZoom: MIN_ZOOM_LEVEL,
-						maxZoom: MAX_ZOOM_LEVEL,
-						zoomControl: false,
-						streetViewControl: false,
-						mapTypeControl: false,
-						styles: heroPathStyle
-					});
-
-					configurePath();
-
-					// Stop the animation when the user zooms or drags the map
-					// google.maps.event.addListener(map, 'zoom_changed', () => {
-					// 	userHasZoomed = true; // Mark that the user manually zoomed
-					// 	stopAnimation();
-					// });
-					// google.maps.event.addListener(map, 'dragstart', stopAnimation);
-
-					// // Resume the animation when user interaction ends (idle event)
-					// google.maps.event.addListener(map, 'idle', resumeAnimation);
-				})
-				.catch((e) => {
-					console.error(e);
-					toast.error('Error loading map: ', e);
-				});
+			clearInterval(animationInterval ?? '');
+			plotActivitiesOnMap();
 		});
 
 		coordinatesStore.subscribe((coordinates) => {
 			if (coordinates) {
 				clearPreviousData();
-				plotActivitiesOnMap(coordinates as any[]);
+				clearInterval(animationInterval ?? '');
+				activities = coordinates;
+				plotActivitiesOnMap();
 			}
 		});
 
-		function plotActivitiesOnMap(activities: any[]) {
+		onMount(() => {
+			createMap();
+		});
+
+		function createMap() {
+			import('@googlemaps/js-api-loader').then((pkg) => {
+				const { Loader } = pkg;
+				const loader = new Loader({
+					apiKey: PUBLIC_GOOGLE_MAP_API_KEY,
+					version: 'weekly'
+				});
+
+				loader
+					.importLibrary('maps')
+					.then(({ Map }) => {
+						map = new Map(document.getElementById('map') as HTMLElement, {
+							center: { lat: 0, lng: 0 },
+							zoom: MIN_ZOOM_LEVEL,
+							minZoom: MIN_ZOOM_LEVEL,
+							maxZoom: MAX_ZOOM_LEVEL,
+							zoomControl: false,
+							streetViewControl: false,
+							mapTypeControl: false,
+							styles: themes[theme.value as keyof typeof themes]
+						});
+
+						configurePath();
+
+						// Stop the animation when the user zooms or drags the map
+						// google.maps.event.addListener(map, 'zoom_changed', () => {
+						// 	userHasZoomed = true; // Mark that the user manually zoomed
+						// 	stopAnimation();
+						// });
+						// google.maps.event.addListener(map, 'dragstart', stopAnimation);
+
+						// // Resume the animation when user interaction ends (idle event)
+						// google.maps.event.addListener(map, 'idle', resumeAnimation);
+					})
+					.catch((e) => {
+						console.error(e);
+						toast.error('Error loading map: ', e);
+					});
+			});
+		}
+
+		function updateMapStyle(newTheme: { value: string; label: string }) {
+			if (map && theme.value !== newTheme.value) {
+				theme = newTheme;
+				createMap();
+			}
+		}
+
+		function plotActivitiesOnMap() {
 			if (!activities.length) return;
 			const activity = activities[0]; // Get the first activity
 			const coordinates = activity.map(
@@ -77,8 +123,8 @@
 
 			configurePath();
 			startAnimation(() => {
-				// After this activity is animated, animate the next
-				plotActivitiesOnMap(activities.slice(1)); // Animate the next activity
+				activities = activities.slice(1);
+				plotActivitiesOnMap();
 			});
 		}
 
@@ -90,8 +136,8 @@
 				path: [],
 				geodesic: true,
 				strokeColor: '#4ae5a1',
-				strokeOpacity: 0.8,
-				strokeWeight: 5
+				strokeOpacity,
+				strokeWeight
 			});
 
 			flightPath.setMap(map);
@@ -105,7 +151,7 @@
 				map: map,
 				icon: {
 					url: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png', // Custom icon
-					scaledSize: new google.maps.Size(32, 32) // Adjust size
+					scaledSize: new google.maps.Size(markerSize, markerSize) // Adjust size
 				}
 			});
 		}
@@ -142,7 +188,7 @@
 				currentIndex++;
 			}
 
-			animationInterval = window.setInterval(addNextCoordinate, 20); // Adjust speed with 20ms intervals
+			animationInterval = window.setInterval(addNextCoordinate, speedAnimation);
 		}
 
 		// Clear previous animation data when a new file is uploaded

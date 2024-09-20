@@ -4,7 +4,6 @@
 
 	import Github from 'lucide-svelte/icons/github';
 	import Info from 'lucide-svelte/icons/info';
-	import Settings from 'lucide-svelte/icons/settings';
 	import SquareTerminal from 'lucide-svelte/icons/square-terminal';
 	import SquareUser from 'lucide-svelte/icons/square-user';
 	import Triangle from 'lucide-svelte/icons/triangle';
@@ -17,11 +16,11 @@
 	import { ModeWatcher } from 'mode-watcher';
 
 	import { toggleMode } from 'mode-watcher';
-	import ButtonIntegations from '../components/button-integations.svelte';
 	import DrawerActivities from '../components/drawer-activities.svelte';
+	import DrawerButtonIntegations from '../components/drawer-button-integations.svelte';
+	import DrawerButtonSettings from '../components/drawer-button-settings.svelte';
 
 	$: isHomePage = $page.url.pathname === '/';
-	$: isSettingsPage = $page.url.pathname === '/settings';
 	$: isInfoPage = $page.url.pathname === '/info';
 </script>
 
@@ -50,21 +49,7 @@
 			</Tooltip.Trigger>
 			<Tooltip.Content side="right" sideOffset={5}>Home</Tooltip.Content>
 		</Tooltip.Root>
-		<Tooltip.Root openDelay={0}>
-			<Tooltip.Trigger asChild let:builder>
-				<Button
-					href="/settings"
-					variant="ghost"
-					size="icon"
-					class="rounded-lg {isSettingsPage ? 'bg-muted' : ''}"
-					aria-label="Settings"
-					builders={[builder]}
-				>
-					<Settings class="size-5" />
-				</Button>
-			</Tooltip.Trigger>
-			<Tooltip.Content side="right" sideOffset={5}>Settings</Tooltip.Content>
-		</Tooltip.Root>
+		<DrawerButtonSettings />
 		<Tooltip.Root openDelay={0}>
 			<Tooltip.Trigger asChild let:builder>
 				<Button
@@ -120,7 +105,7 @@
 	<div class="flex flex-col">
 		<header class="sticky top-0 z-10 flex h-[57px] items-center gap-1 border-b bg-background px-4">
 			<h1 class="text-xl font-semibold">TrackQuest</h1>
-			<ButtonIntegations />
+			<DrawerButtonIntegations />
 			<Button on:click={toggleMode} variant="outline" size="sm" class="gap-1.5 text-sm">
 				<Sun
 					class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"

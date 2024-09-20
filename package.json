@@ -39,7 +39,7 @@
 		"@googlemaps/js-api-loader": "^1.16.8",
 		"@mapbox/polyline": "^1.2.1",
 		"@mapbox/togeojson": "^0.16.2",
-		"bits-ui": "^0.21.14",
+		"bits-ui": "^0.21.15",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",
 		"lucide-svelte": "^0.441.0",
