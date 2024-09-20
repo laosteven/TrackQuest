@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Map from '../components/tools/map.svelte';
+	import GoogleMaps from '../components/tools/google-maps.svelte';
 </script>
 
 <svelte:head>
@@ -8,6 +8,6 @@
 
 <main class="grid flex-1 gap-4 overflow-auto">
 	<div class="relative flex-col items-start gap-8 md:flex">
-		<Map></Map>
+		<GoogleMaps></GoogleMaps>
 	</div>
 </main>

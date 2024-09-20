@@ -5,6 +5,7 @@
 
 	import GithubButton from '../buttons/github-button.svelte';
 	import HomeButton from '../buttons/home-button.svelte';
+	import InfoButton from '../buttons/info-button.svelte';
 	import AccountButton from '../buttons/login-button.svelte';
 	import SettingsButton from '../buttons/settings-button.svelte';
 </script>
@@ -18,6 +19,7 @@
 	<nav class="grid gap-1 p-2">
 		<HomeButton />
 		<SettingsButton />
+		<InfoButton />
 	</nav>
 	<nav class="mt-auto grid gap-1 p-2">
 		<GithubButton />

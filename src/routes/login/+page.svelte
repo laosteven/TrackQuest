@@ -4,18 +4,16 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 
-	import TriangleAlert from 'lucide-svelte/icons/triangle-alert';
+	import Construction from 'lucide-svelte/icons/construction';
 </script>
 
 <div class="w-full lg:grid lg:min-h-[600px] xl:min-h-[800px]">
 	<div class="flex items-center justify-center py-12">
 		<div class="mx-auto grid w-[350px] gap-6">
 			<Alert.Root class="mb-8" variant="destructive">
-				<TriangleAlert class="h-4 w-4" />
-				<Alert.Title>Heads up!</Alert.Title>
-				<Alert.Description
-					>This page is still under construction. Login is not work yet.</Alert.Description
-				>
+				<Construction class="h-4 w-4" />
+				<Alert.Title>Under construction!</Alert.Title>
+				<Alert.Description>Stay tuned for more updates.</Alert.Description>
 			</Alert.Root>
 			<div class="grid gap-2 text-center">
 				<h1 class="text-3xl font-bold">Login</h1>

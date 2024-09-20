@@ -124,7 +124,7 @@
 </script>
 
 <svelte:head>
-	<title>TrackQuest</title>
+	<title>TrackQuest | Filtering ...</title>
 </svelte:head>
 
 <Skeleton class="h-[90vh] w-full" />
