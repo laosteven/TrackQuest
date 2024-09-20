@@ -16,6 +16,8 @@ It allows users to track their activities while providing customizable map style
 
 ![Completion](https://i.imgur.com/gGIV6fn.png)
 
+https://github.com/user-attachments/assets/4b317b06-6a43-44cd-ab49-c37c9fa10a0a
+
 ## Features
 
 - Upload routes in GPX format
