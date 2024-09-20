@@ -1,10 +1,12 @@
 <script lang="ts">
+	import * as Alert from '$lib/components/ui/alert';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import Activity from 'lucide-svelte/icons/activity';
 	import ArrowUpRight from 'lucide-svelte/icons/arrow-up-right';
+	import Construction from 'lucide-svelte/icons/construction';
 	import Flame from 'lucide-svelte/icons/flame';
 	import LandPlot from 'lucide-svelte/icons/land-plot';
 	import Timer from 'lucide-svelte/icons/timer';
@@ -39,6 +41,11 @@
 </svelte:head>
 
 <div class="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+	<Alert.Root variant="destructive">
+		<Construction class="h-4 w-4" />
+		<Alert.Title>Under construction!</Alert.Title>
+		<Alert.Description>Stay tuned for more updates.</Alert.Description>
+	</Alert.Root>
 	<div class="flex items-center">
 		<h1 class="text-lg font-semibold md:text-2xl">Information</h1>
 	</div>

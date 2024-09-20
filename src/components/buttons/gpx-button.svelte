@@ -32,9 +32,14 @@
 						const geojson = gpx(xml);
 						geojson.features.forEach((feature: any) => {
 							if (feature.geometry && feature.geometry.coordinates) {
-								feature.geometry.coordinates = feature.geometry.coordinates.map(
-									([lng, lat]: [number, number]) => [lat, lng] // Swap lat and lng
-								);
+								try {
+									feature.geometry.coordinates = feature.geometry.coordinates.map(
+										([lng, lat]: [number, number]) => [lat, lng] // Swap lat and lng
+									);
+								} catch (e: any) {
+									toast.error('Could not read the file(s)');
+									throw Error('Reading error', e);
+								}
 							}
 						});
 						const coordinates = geojson.features[0]?.geometry.coordinates;
