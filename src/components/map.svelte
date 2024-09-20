@@ -28,6 +28,7 @@
 				: { value: 'dark', label: 'Depths Abyss' };
 		let speedAnimation = 20;
 		let strokeWeight = 5;
+		let strokeColor = '#4ae5a1';
 		let strokeOpacity = 0.8;
 		let markerSize = 32;
 
@@ -43,6 +44,7 @@
 			updateMapStyle(settings.theme);
 			speedAnimation = settings.speedAnimation;
 			strokeWeight = settings.strokeWeight;
+			strokeColor = settings.strokeColor;
 			strokeOpacity = settings.strokeOpacity;
 			markerSize = settings.markerSize;
 
@@ -135,7 +137,7 @@
 			flightPath = new google.maps.Polyline({
 				path: [],
 				geodesic: true,
-				strokeColor: '#4ae5a1',
+				strokeColor,
 				strokeOpacity,
 				strokeWeight
 			});

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Drawer from '$lib/components/ui/drawer';
+	import Input from '$lib/components/ui/input/input.svelte';
 	import Label from '$lib/components/ui/label/label.svelte';
 	import * as Select from '$lib/components/ui/select/index.js';
 	import { Slider } from '$lib/components/ui/slider';
@@ -20,12 +21,14 @@
 	$: speedAnimation = 20;
 	$: strokeWeight = 5;
 	$: strokeOpacity = 0.8;
+	$: strokeColor = '#4ae5a1';
 	$: markerSize = 32;
 
 	settingsStore.subscribe((value) => {
 		speedAnimation = value.speedAnimation;
 		strokeWeight = value.strokeWeight;
 		strokeOpacity = value.strokeOpacity;
+		strokeColor = value.strokeColor;
 		markerSize = value.markerSize;
 	});
 
@@ -36,6 +39,7 @@
 			speedAnimation,
 			strokeWeight,
 			strokeOpacity,
+			strokeColor,
 			markerSize
 		}));
 	}
@@ -118,7 +122,7 @@
 					</Select.Root>
 				</div>
 				<div class="grid gap-3">
-					<Label for="speed">Animation speed</Label>
+					<Label for="animation-speed">Animation speed</Label>
 					<Slider
 						value={[speedAnimation]}
 						min={5}
@@ -137,7 +141,7 @@
 					</div>
 				</div>
 				<div class="grid gap-3">
-					<Label for="top-p">Stroke width</Label>
+					<Label for="stroke-width">Stroke width</Label>
 					<Slider
 						value={[strokeWeight]}
 						min={0}
@@ -156,7 +160,7 @@
 					</div>
 				</div>
 				<div class="grid gap-3">
-					<Label for="top-k">Stroke opacity</Label>
+					<Label for="stroke-opacity">Stroke opacity</Label>
 					<Slider
 						value={[strokeOpacity]}
 						min={0.0}
@@ -175,7 +179,19 @@
 					</div>
 				</div>
 				<div class="grid gap-3">
-					<Label for="top-k">Marker size</Label>
+					<Label for="stroke-color">Stroke color</Label>
+					<Input id="stroke-color" type="color" bind:value={strokeColor} />
+					<div class="flex items-center gap-4">
+						<Button
+							class="ml-auto h-8"
+							variant="outline"
+							size="icon"
+							on:click={() => (strokeColor = '#4ae5a1')}><Undo class="h-4 w-4" /></Button
+						>
+					</div>
+				</div>
+				<div class="grid gap-3">
+					<Label for="marker-size">Marker size</Label>
 					<Slider
 						value={[markerSize]}
 						min={0}
