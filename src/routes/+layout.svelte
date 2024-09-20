@@ -15,13 +15,26 @@
 	import Sun from 'lucide-svelte/icons/sun';
 	import { ModeWatcher } from 'mode-watcher';
 
-	import { toggleMode } from 'mode-watcher';
+	import { mode, toggleMode } from 'mode-watcher';
+	import DrawerButtonIntegations from '../components/dialog-button-integations.svelte';
 	import DrawerActivities from '../components/drawer-activities.svelte';
-	import DrawerButtonIntegations from '../components/drawer-button-integations.svelte';
 	import DrawerButtonSettings from '../components/drawer-button-settings.svelte';
+	import { settingsStore } from '../stores/settings-store';
 
 	$: isHomePage = $page.url.pathname === '/';
 	$: isInfoPage = $page.url.pathname === '/info';
+
+	function onClickToggle() {
+		toggleMode();
+		const theme =
+			$mode === 'light'
+				? { value: 'light', label: 'Skyward Haven' }
+				: { value: 'dark', label: 'Depths Abyss' };
+		settingsStore.update((currentSettings) => ({
+			...currentSettings,
+			theme
+		}));
+	}
 </script>
 
 <ModeWatcher />
@@ -106,7 +119,7 @@
 		<header class="sticky top-0 z-10 flex h-[57px] items-center gap-1 border-b bg-background px-4">
 			<h1 class="text-xl font-semibold">TrackQuest</h1>
 			<DrawerButtonIntegations />
-			<Button on:click={toggleMode} variant="outline" size="sm" class="gap-1.5 text-sm">
+			<Button on:click={onClickToggle} variant="outline" size="sm" class="gap-1.5 text-sm">
 				<Sun
 					class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
 				/>

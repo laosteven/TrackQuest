@@ -62,7 +62,7 @@
 			<Tooltip.Content side="right" sideOffset={5}>Settings</Tooltip.Content>
 		</Tooltip.Root>
 	</Drawer.Trigger>
-	<Drawer.Content class="mx-auto sm:max-w-[400px]">
+	<Drawer.Content class="mx-auto max-h-[80vh] sm:max-w-[400px]">
 		<Drawer.Header>
 			<Drawer.Title>Settings</Drawer.Title>
 			<Drawer.Description>Customize your map experience</Drawer.Description>
