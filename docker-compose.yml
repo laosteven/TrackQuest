@@ -1,0 +1,12 @@
+version: '3'
+services:
+  trackquest:
+    image: laosteven/trackquest:latest
+    container_name: trackquest
+    ports:
+      - '1234:1234'
+    environment:
+      - PUBLIC_GOOGLE_MAP_API_KEY=${PUBLIC_GOOGLE_MAP_API_KEY}
+      - PUBLIC_STRAVA_CLIENT_ID=${PUBLIC_STRAVA_CLIENT_ID}
+      - PUBLIC_STRAVA_CLIENT_SECRET=${PUBLIC_STRAVA_CLIENT_SECRET}
+    restart: unless-stopped

@@ -3,7 +3,6 @@
 	import '../app.css';
 
 	import Github from 'lucide-svelte/icons/github';
-	import Info from 'lucide-svelte/icons/info';
 	import SquareTerminal from 'lucide-svelte/icons/square-terminal';
 	import SquareUser from 'lucide-svelte/icons/square-user';
 	import Triangle from 'lucide-svelte/icons/triangle';
@@ -22,7 +21,6 @@
 	import { settingsStore } from '../stores/settings-store';
 
 	$: isHomePage = $page.url.pathname === '/';
-	$: isInfoPage = $page.url.pathname === '/info';
 
 	function onClickToggle() {
 		toggleMode();
@@ -63,21 +61,6 @@
 			<Tooltip.Content side="right" sideOffset={5}>Home</Tooltip.Content>
 		</Tooltip.Root>
 		<DrawerButtonSettings />
-		<Tooltip.Root openDelay={0}>
-			<Tooltip.Trigger asChild let:builder>
-				<Button
-					href="/info"
-					variant="ghost"
-					size="icon"
-					class="rounded-lg {isInfoPage ? 'bg-muted' : ''}"
-					aria-label="Info"
-					builders={[builder]}
-				>
-					<Info class="size-5" />
-				</Button>
-			</Tooltip.Trigger>
-			<Tooltip.Content side="right" sideOffset={5}>Info</Tooltip.Content>
-		</Tooltip.Root>
 	</nav>
 	<nav class="mt-auto grid gap-1 p-2">
 		<Tooltip.Root openDelay={0}>
