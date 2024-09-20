@@ -4,6 +4,8 @@
 	import { Toaster } from '$lib/components/ui/sonner';
 	import { ModeWatcher } from 'mode-watcher';
 
+	import ActivityTypeDialog from '../components/dialog/activity-type-dialog.svelte';
+	import CalendarDialog from '../components/dialog/calendar-dialog.svelte';
 	import StartDialog from '../components/dialog/start-dialog.svelte';
 	import DrawerSettings from '../components/drawer/settings-drawer.svelte';
 	import Sidebar from '../components/navigation/sidebar.svelte';
@@ -17,6 +19,8 @@
 <!-- Overlays -->
 <DrawerSettings />
 <StartDialog />
+<CalendarDialog />
+<ActivityTypeDialog />
 
 <!-- Navigation -->
 <Sidebar />
