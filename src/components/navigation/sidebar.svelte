@@ -3,9 +3,9 @@
 
 	import { Button } from '$lib/components/ui/button/index.js';
 
-	import AccountButton from '../buttons/account-button.svelte';
 	import GithubButton from '../buttons/github-button.svelte';
 	import HomeButton from '../buttons/home-button.svelte';
+	import AccountButton from '../buttons/login-button.svelte';
 	import SettingsButton from '../buttons/settings-button.svelte';
 </script>
 
