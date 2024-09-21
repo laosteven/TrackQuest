@@ -60,6 +60,7 @@
 			stravaTokenStore.set(data.access_token);
 
 			if (accessToken) {
+				console.log('Athlete authorized');
 				fetchStravaActivities();
 			}
 		} catch (e) {
@@ -68,8 +69,30 @@
 		}
 	}
 
+	async function deauthorizeAthlete() {
+		const response = await fetch('https://www.strava.com/oauth/deauthorize', {
+			method: 'POST',
+			headers: {
+				Authorization: `Bearer ${accessToken}`,
+				'Content-Type': 'application/json'
+			}
+		});
+
+		if (response.ok) {
+			console.log('Athlete successfully deauthorized');
+			stravaTokenStore.set(null);
+		} else {
+			const errorData = await response.json();
+			console.error('Error deauthorizing athlete:', errorData);
+		}
+	}
+
 	async function fetchStravaActivities() {
 		const activities = await fetchActivities();
+
+		// After fetching, deauthorize
+		// We're limited to 1 athlete only
+		await deauthorizeAthlete();
 
 		activitiesStore.set(activities);
 		openDateRangeDialog.set(true);
